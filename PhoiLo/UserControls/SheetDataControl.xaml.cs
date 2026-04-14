@@ -1,18 +1,18 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Data;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
+using Google.Apis.Util.Store;
 
 namespace PhoiLo.UserControls
 {
     public partial class SheetDataControl : UserControl
     {
-        // Khai báo Scope cho phép đọc dữ liệu Sheet
         static string[] Scopes = { SheetsService.Scope.SpreadsheetsReadonly };
         static string ApplicationName = "PhoiLo App";
 
@@ -21,51 +21,87 @@ namespace PhoiLo.UserControls
             InitializeComponent();
         }
 
-        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        private async void BtnConnect_Click(object sender, RoutedEventArgs e)
         {
-            LoadGoogleSheetData();
-        }
+            string clientId = TxtClientId.Text.Trim();
+            string clientSecret = TxtClientSecret.Text.Trim();
+            string spreadsheetId = TxtSheetId.Text.Trim();
+            string range = TxtRange.Text.Trim();
 
-        private void LoadGoogleSheetData()
-        {
+            if (string.IsNullOrEmpty(clientId) || string.IsNullOrEmpty(clientSecret) || string.IsNullOrEmpty(spreadsheetId))
+            {
+                MessageBox.Show("Anh hai vui lòng điền đầy đủ Client ID, Client Secret và Sheet ID nha!", "Thiếu thông tin");
+                return;
+            }
+
             try
             {
-                // TODO: Anh hai cần bỏ file credentials.json (tải từ Google Cloud Console) vào cùng thư mục chạy của app
-                // Hoặc dùng chuỗi ClientId, ClientSecret trực tiếp (nhưng dùng file json là chuẩn bài nhất)
-                /* Tạm thời Tèo comment lại đoạn xác thực thật để code không bị lỗi khi chưa có file
-                GoogleCredential credential;
-                using (var stream = new FileStream("credentials.json", FileMode.Open, FileAccess.Read))
+                // Cấu hình thông tin xác thực
+                ClientSecrets secrets = new ClientSecrets
                 {
-                    credential = GoogleCredential.FromStream(stream).CreateScoped(Scopes);
-                }
+                    ClientId = clientId,
+                    ClientSecret = clientSecret
+                };
 
+                // [Suy luận] Khi ứng dụng chạy trên Windows, lệnh này sẽ mở trình duyệt web lên yêu cầu anh hai đăng nhập Google
+                UserCredential credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
+                    secrets,
+                    Scopes,
+                    "user",
+                    CancellationToken.None,
+                    new FileDataStore("PhoiLo.GoogleAuth.Store"));
+
+                // Khởi tạo dịch vụ Google Sheet
                 var service = new SheetsService(new BaseClientService.Initializer()
                 {
                     HttpClientInitializer = credential,
                     ApplicationName = ApplicationName,
                 });
 
-                // Thay ID của bảng tính anh hai vào đây
-                String spreadsheetId = "ID_BANG_TINH_CUA_ANH_HAI"; 
-                String range = "Sheet1!A1:E10"; // Vùng dữ liệu muốn lấy
-
+                // Gửi yêu cầu lấy dữ liệu
                 SpreadsheetsResource.ValuesResource.GetRequest request = service.Spreadsheets.Values.Get(spreadsheetId, range);
-                var response = request.Execute();
-                IList<IList<Object>> values = response.Values;
-                */
+                var response = await request.ExecuteAsync();
+                IList<IList<object>> values = response.Values;
 
-                // Dữ liệu giả lập (Mock data) để anh hai test giao diện trước khi có API thật
-                var mockData = new List<dynamic>
+                if (values != null && values.Count > 0)
                 {
-                    new { STT = 1, TenVatTu = "Thép cuộn", SoLuong = 100, TrangThai = "OK" },
-                    new { STT = 2, TenVatTu = "Than đá", SoLuong = 500, TrangThai = "Đang chờ" }
-                };
+                    // Chuyển đổi dữ liệu thành DataTable
+                    DataTable dt = new DataTable();
+                    
+                    // Dòng đầu tiên trong Sheet được dùng làm Header (Tiêu đề cột)
+                    var headers = values[0];
+                    foreach (var header in headers)
+                    {
+                        dt.Columns.Add(header.ToString());
+                    }
 
-                SheetDataGrid.ItemsSource = mockData;
+                    // Các dòng tiếp theo là dữ liệu
+                    for (int i = 1; i < values.Count; i++)
+                    {
+                        var row = dt.NewRow();
+                        var rowData = values[i];
+                        for (int j = 0; j < headers.Count; j++)
+                        {
+                            if (j < rowData.Count)
+                            {
+                                row[j] = rowData[j]?.ToString() ?? "";
+                            }
+                        }
+                        dt.Rows.Add(row);
+                    }
+
+                    // Đưa dữ liệu lên DataGrid
+                    SheetDataGrid.ItemsSource = dt.DefaultView;
+                    MessageBox.Show("Lấy dữ liệu thành công rồi anh hai!", "Thông báo");
+                }
+                else
+                {
+                    MessageBox.Show("Không tìm thấy dữ liệu trong bảng tính.", "Thông báo");
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi lấy dữ liệu: " + ex.Message);
+                MessageBox.Show("Có lỗi xảy ra: " + ex.Message, "Lỗi");
             }
         }
     }

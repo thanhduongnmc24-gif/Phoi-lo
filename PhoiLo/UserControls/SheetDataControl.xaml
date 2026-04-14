@@ -1,14 +1,43 @@
 <UserControl x:Class="PhoiLo.UserControls.SheetDataControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             Loaded="UserControl_Loaded">
-    <Grid>
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid Margin="10">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock Text="DỮ LIỆU TỪ GOOGLE SHEET" FontWeight="Bold" FontSize="18" Margin="0,0,0,10"/>
+
+        <TextBlock Text="KẾT NỐI GOOGLE SHEET" FontWeight="Bold" FontSize="18" Margin="0,0,0,10" Grid.Row="0"/>
         
-        <DataGrid x:Name="SheetDataGrid" Grid.Row="1" AutoGenerateColumns="True" IsReadOnly="True"/>
+        <Grid Grid.Row="1" Margin="0,0,0,15">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="Client ID:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Margin="0,5"/>
+            <TextBox x:Name="TxtClientId" Grid.Row="0" Grid.Column="1" Margin="0,5" Height="25"/>
+
+            <TextBlock Text="Client Secret:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="0,5"/>
+            <TextBox x:Name="TxtClientSecret" Grid.Row="1" Grid.Column="1" Margin="0,5" Height="25"/>
+
+            <TextBlock Text="Sheet ID:" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="0,5"/>
+            <TextBox x:Name="TxtSheetId" Grid.Row="2" Grid.Column="1" Margin="0,5" Height="25"/>
+            
+            <TextBlock Text="Vùng lấy dữ liệu:" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" Margin="0,5"/>
+            <TextBox x:Name="TxtRange" Grid.Row="3" Grid.Column="1" Margin="0,5" Height="25" Text="Sheet1!A1:Z100"/>
+
+            <Button x:Name="BtnConnect" Content="Kết nối &amp; Lấy dữ liệu" Grid.Row="4" Grid.Column="1" Height="35" Margin="0,10,0,0" Click="BtnConnect_Click" HorizontalAlignment="Left" Width="150"/>
+        </Grid>
+
+        <DataGrid x:Name="SheetDataGrid" Grid.Row="2" AutoGenerateColumns="True" IsReadOnly="True" AlternatingRowBackground="#f9f9f9"/>
     </Grid>
 </UserControl>
