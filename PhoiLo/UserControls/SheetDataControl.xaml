@@ -1,7 +1,7 @@
 <UserControl x:Class="PhoiLo.UserControls.SheetDataControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <Grid DataContext="{Binding Source={x:Static local:App.Config}}">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:PhoiLo"> <Grid DataContext="{Binding Source={x:Static local:App.Config}}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -11,7 +11,8 @@
                   FontSize="{Binding TableFontSize}" 
                   FontFamily="{Binding TableFontFamily}"
                   ColumnWidth="{Binding ColumnWidth}"
-                  AutoGenerateColumns="True" IsReadOnly="True">
+                  AutoGenerateColumns="True" IsReadOnly="True"
+                  AlternatingRowBackground="#f2f2f2">
             
             <DataGrid.Resources>
                 <Style TargetType="DataGridColumnHeader">
