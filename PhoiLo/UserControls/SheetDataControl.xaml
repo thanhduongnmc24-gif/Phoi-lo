@@ -1,17 +1,23 @@
 <UserControl x:Class="PhoiLo.UserControls.SheetDataControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:PhoiLo"> <Grid DataContext="{Binding Source={x:Static local:App.Config}}">
+             xmlns:local="clr-namespace:PhoiLo">
+    
+    <Grid DataContext="{Binding Source={x:Static local:App.Config}}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
+        <DockPanel Margin="0,0,0,10">
+            <TextBlock Text="DỮ LIỆU PHÔI RA LÒ" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
+            <Button Content="🔄 Tải lại dữ liệu" Click="BtnReload_Click" HorizontalAlignment="Right" Padding="15,5" Background="#2ecc71" Foreground="White" FontWeight="Bold" BorderThickness="0"/>
+        </DockPanel>
+
         <DataGrid x:Name="MainDataGrid" Grid.Row="1" 
                   FontSize="{Binding TableFontSize}" 
                   FontFamily="{Binding TableFontFamily}"
-                  ColumnWidth="{Binding ColumnWidth}"
-                  AutoGenerateColumns="True" IsReadOnly="True"
+                  AutoGenerateColumns="False" IsReadOnly="True"
                   AlternatingRowBackground="#f2f2f2">
             
             <DataGrid.Resources>
@@ -28,6 +34,19 @@
                     <Setter Property="Foreground" Value="White"/>
                 </Style>
             </DataGrid.Resources>
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="STT" Binding="{Binding [STT]}" Width="{Binding Source={x:Static local:App.Config}, Path=Col1Width}"/>
+                <DataGridTextColumn Header="Phương thức nạp" Binding="{Binding [Phương thức nạp]}" Width="{Binding Source={x:Static local:App.Config}, Path=Col2Width}"/>
+                <DataGridTextColumn Header="Mác phôi" Binding="{Binding [Mác phôi]}" Width="{Binding Source={x:Static local:App.Config}, Path=Col3Width}"/>
+                <DataGridTextColumn Header="Mẻ số" Binding="{Binding [Mẻ số]}" Width="{Binding Source={x:Static local:App.Config}, Path=Col4Width}"/>
+                <DataGridTextColumn Header="Số cây nạp lò" Binding="{Binding [Số cây nạp lò]}" Width="{Binding Source={x:Static local:App.Config}, Path=Col5Width}"/>
+                <DataGridTextColumn Header="Ra sàn nguội" Binding="{Binding [Ra sàn nguội]}" Width="{Binding Source={x:Static local:App.Config}, Path=Col6Width}"/>
+                <DataGridTextColumn Header="Hư công nghệ" Binding="{Binding [Hư công nghệ]}" Width="{Binding Source={x:Static local:App.Config}, Path=Col7Width}"/>
+                <DataGridTextColumn Header="Hồi lò" Binding="{Binding [Hồi lò]}" Width="{Binding Source={x:Static local:App.Config}, Path=Col8Width}"/>
+                <DataGridTextColumn Header="Tổng số thanh khi hết mẻ" Binding="{Binding [Tổng số thanh khi hết mẻ]}" Width="{Binding Source={x:Static local:App.Config}, Path=Col9Width}"/>
+                <DataGridTextColumn Header="Chiều dài" Binding="{Binding [Chiều dài]}" Width="{Binding Source={x:Static local:App.Config}, Path=Col10Width}"/>
+            </DataGrid.Columns>
         </DataGrid>
     </Grid>
 </UserControl>

@@ -1,7 +1,7 @@
 <Window x:Class="PhoiLo.Windows.SettingWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Cài đặt hệ thống" Height="600" Width="500" WindowStartupLocation="CenterOwner">
+        Title="Cài đặt hệ thống" Height="650" Width="600" WindowStartupLocation="CenterOwner">
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="20">
             <TextBlock Text="⚙ CẤU HÌNH HỆ THỐNG" FontWeight="Bold" FontSize="18" Margin="0,0,0,15"/>
@@ -10,23 +10,62 @@
                 <StackPanel>
                     <TextBlock Text="Client ID:"/>
                     <TextBox Text="{Binding ClientId, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,10" Padding="5"/>
-                    
                     <TextBlock Text="Client Secret:"/>
                     <TextBox Text="{Binding ClientSecret, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,10" Padding="5"/>
-                    
                     <TextBlock Text="Sheet ID:"/>
                     <TextBox Text="{Binding SheetId, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,10" Padding="5"/>
-                    
                     <TextBlock Text="Vùng lấy dữ liệu:"/>
                     <TextBox Text="{Binding Range, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,10" Padding="5"/>
                 </StackPanel>
             </GroupBox>
 
+            <GroupBox Header="Độ rộng từng cột" Margin="0,0,0,15" Padding="10">
+                <UniformGrid Columns="2">
+                    <StackPanel Margin="5,0,15,10">
+                        <TextBlock Text="{Binding Col1Width, StringFormat='STT: {0:0}'}"/>
+                        <Slider Minimum="30" Maximum="200" Value="{Binding Col1Width}"/>
+                    </StackPanel>
+                    <StackPanel Margin="5,0,15,10">
+                        <TextBlock Text="{Binding Col2Width, StringFormat='Phương thức: {0:0}'}"/>
+                        <Slider Minimum="50" Maximum="300" Value="{Binding Col2Width}"/>
+                    </StackPanel>
+                    <StackPanel Margin="5,0,15,10">
+                        <TextBlock Text="{Binding Col3Width, StringFormat='Mác phôi: {0:0}'}"/>
+                        <Slider Minimum="50" Maximum="300" Value="{Binding Col3Width}"/>
+                    </StackPanel>
+                    <StackPanel Margin="5,0,15,10">
+                        <TextBlock Text="{Binding Col4Width, StringFormat='Mẻ số: {0:0}'}"/>
+                        <Slider Minimum="50" Maximum="300" Value="{Binding Col4Width}"/>
+                    </StackPanel>
+                    <StackPanel Margin="5,0,15,10">
+                        <TextBlock Text="{Binding Col5Width, StringFormat='Số cây nạp: {0:0}'}"/>
+                        <Slider Minimum="50" Maximum="300" Value="{Binding Col5Width}"/>
+                    </StackPanel>
+                    <StackPanel Margin="5,0,15,10">
+                        <TextBlock Text="{Binding Col6Width, StringFormat='Ra sàn nguội: {0:0}'}"/>
+                        <Slider Minimum="50" Maximum="300" Value="{Binding Col6Width}"/>
+                    </StackPanel>
+                    <StackPanel Margin="5,0,15,10">
+                        <TextBlock Text="{Binding Col7Width, StringFormat='Hư công nghệ: {0:0}'}"/>
+                        <Slider Minimum="50" Maximum="300" Value="{Binding Col7Width}"/>
+                    </StackPanel>
+                    <StackPanel Margin="5,0,15,10">
+                        <TextBlock Text="{Binding Col8Width, StringFormat='Hồi lò: {0:0}'}"/>
+                        <Slider Minimum="50" Maximum="300" Value="{Binding Col8Width}"/>
+                    </StackPanel>
+                    <StackPanel Margin="5,0,15,10">
+                        <TextBlock Text="{Binding Col9Width, StringFormat='Tổng số thanh: {0:0}'}"/>
+                        <Slider Minimum="50" Maximum="400" Value="{Binding Col9Width}"/>
+                    </StackPanel>
+                    <StackPanel Margin="5,0,15,10">
+                        <TextBlock Text="{Binding Col10Width, StringFormat='Chiều dài: {0:0}'}"/>
+                        <Slider Minimum="50" Maximum="300" Value="{Binding Col10Width}"/>
+                    </StackPanel>
+                </UniformGrid>
+            </GroupBox>
+
             <GroupBox Header="Giao diện bảng &amp; Menu" Padding="10">
                 <StackPanel>
-                    <TextBlock Text="{Binding ColumnWidth, StringFormat='Độ rộng cột: {0:0}'}"/>
-                    <Slider Minimum="50" Maximum="400" Value="{Binding ColumnWidth}" Margin="0,5,0,15"/>
-
                     <TextBlock Text="Font chữ bảng:"/>
                     <ComboBox SelectedValuePath="Content" SelectedValue="{Binding TableFontFamily}" Margin="0,5">
                         <ComboBoxItem Content="Segoe UI"/>
@@ -41,6 +80,7 @@
                     <ComboBox SelectedValuePath="Content" SelectedValue="{Binding MenuFontFamily}" Margin="0,5">
                         <ComboBoxItem Content="Segoe UI"/>
                         <ComboBoxItem Content="Arial"/>
+                        <ComboBoxItem Content="Times New Roman"/>
                     </ComboBox>
 
                     <TextBlock Text="{Binding MenuFontSize, StringFormat='Cỡ chữ Menu: {0:0}'}" Margin="0,10,0,0"/>
