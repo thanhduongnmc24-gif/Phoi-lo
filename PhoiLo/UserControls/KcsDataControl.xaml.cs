@@ -9,167 +9,68 @@ using ClosedXML.Excel;
 
 namespace PhoiLo.UserControls
 {
-    public class KcsRow
-    {
+    public class KcsRow {
         public string STT { get; set; } = "";
         public string PhuongThuc { get; set; } = "";
         public string MacPhoi { get; set; } = "";
         public string MeSo { get; set; } = "";
         public string ChieuDai { get; set; } = "";
-        public string Kip { get; set; } = "";
-        public string VanHanh { get; set; } = "";
-        public string ToTruong { get; set; } = "";
     }
 
     public partial class KcsDataControl : UserControl
     {
         private List<KcsRow> _dataList = new List<KcsRow>();
-
-        public KcsDataControl()
-        {
+        public KcsDataControl() {
             InitializeComponent();
-            DpDate.SelectedDate = DateTime.Now;
-            InitDataGrid();
-            UpdateFileCount();
-        }
-
-        private void InitDataGrid()
-        {
-            // [Suy luận] Khởi tạo sẵn 50 dòng để copy paste thả ga
             _dataList = Enumerable.Range(1, 50).Select(i => new KcsRow { STT = i.ToString() }).ToList();
             KcsDataGrid.ItemsSource = _dataList;
-        }
-
-        private void CbKip_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (CbKip.SelectedItem is ComboBoxItem selectedItem)
-            {
-                string fullKip = selectedItem.Content.ToString()!;
-                string group = fullKip.Substring(fullKip.Length - 1); // Cắt lấy đuôi A, B, C
-
-                var staff = App.Config.StaffList;
-                CbToTruong.ItemsSource = staff.Where(s => s.Kip.ToUpper() == group && s.ChứcVu.Contains("Tổ trưởng")).ToList();
-                CbVanHanh.ItemsSource = staff.Where(s => s.Kip.ToUpper() == group && s.ChứcVu.Contains("Vận hành")).ToList();
-                
-                if (CbToTruong.Items.Count > 0) CbToTruong.SelectedIndex = 0;
-                if (CbVanHanh.Items.Count > 0) CbVanHanh.SelectedIndex = 0;
-
-                UpdateDataGridKip();
-            }
-        }
-
-        private void CbNhanSu_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            UpdateDataGridKip();
-        }
-
-        private void UpdateDataGridKip()
-        {
-            // Cập nhật lại cột Kíp, Nhân sự cho toàn bộ 50 dòng
-            string kip = (CbKip.SelectedItem as ComboBoxItem)?.Content.ToString() ?? "";
-            string toTruong = CbToTruong.Text;
-            string vanHanh = CbVanHanh.Text;
-
-            foreach (var row in _dataList)
-            {
-                row.Kip = kip;
-                row.ToTruong = toTruong;
-                row.VanHanh = vanHanh;
-            }
-            if (KcsDataGrid != null) KcsDataGrid.Items.Refresh();
-        }
-
-        private void DpDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
-        {
             UpdateFileCount();
         }
 
-        private void KcsDataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            // [Suy luận] Bắt phím Ctrl + V để lấy dữ liệu từ Clipboard
-            if (e.Key == Key.V && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
-            {
-                string clipboardText = Clipboard.GetText();
-                string[] lines = clipboardText.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-                
-                int startRow = KcsDataGrid.SelectedIndex;
-                if (startRow < 0) startRow = 0;
-
-                for (int i = 0; i < lines.Length && (startRow + i) < _dataList.Count; i++)
-                {
-                    string[] cells = lines[i].Split('\t');
-                    var row = _dataList[startRow + i];
-                    
-                    if (cells.Length > 0) row.PhuongThuc = cells[0];
-                    if (cells.Length > 1) row.MacPhoi = cells[1];
-                    if (cells.Length > 2) row.MeSo = cells[2];
-                    if (cells.Length > 3) row.ChieuDai = cells[3];
+        private void KcsDataGrid_PreviewKeyDown(object sender, KeyEventArgs e) {
+            if (e.Key == Key.V && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control) {
+                string[] lines = Clipboard.GetText().Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+                int start = KcsDataGrid.SelectedIndex < 0 ? 0 : KcsDataGrid.SelectedIndex;
+                for (int i = 0; i < lines.Length && (start + i) < 50; i++) {
+                    string[] c = lines[i].Split('\t');
+                    if (c.Length > 0) _dataList[start + i].PhuongThuc = c[0];
+                    if (c.Length > 1) _dataList[start + i].MacPhoi = c[1];
+                    if (c.Length > 2) _dataList[start + i].MeSo = c[2];
+                    if (c.Length > 3) _dataList[start + i].ChieuDai = c[3];
                 }
-                KcsDataGrid.Items.Refresh();
-                e.Handled = true;
+                KcsDataGrid.Items.Refresh(); e.Handled = true;
             }
         }
 
-        private void UpdateFileCount()
-        {
+        private void UpdateFileCount() {
             if (!Directory.Exists("ExportKCS")) Directory.CreateDirectory("ExportKCS");
-            string datePattern = DpDate.SelectedDate?.ToString("dd-MM-yyyy") ?? DateTime.Now.ToString("dd-MM-yyyy");
-            int count = Directory.GetFiles("ExportKCS", $"*-*-{datePattern}-*.xlsx").Length;
-            if (TxtFileCount != null) TxtFileCount.Text = $"Số file trong ngày: {count}";
+            string d = App.Config.CurrentDate.ToString("ddMMyyyy");
+            TxtFileCount.Text = $"Số file trong ngày: {Directory.GetFiles("ExportKCS", $"*-*-{d}-*.xlsx").Length}";
         }
 
-        private void BtnExportExcel_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                string dateStr = DpDate.SelectedDate?.ToString("dd-MM-yyyy") ?? DateTime.Now.ToString("dd-MM-yyyy");
-                string timeStr = DateTime.Now.ToString("HH-mm");
-                string kipStr = (CbKip.SelectedItem as ComboBoxItem)?.Content.ToString() ?? "ChuaChonKip";
+        private void BtnExportExcel_Click(object sender, RoutedEventArgs e) {
+            try {
+                var cfg = App.Config;
+                string d = cfg.CurrentDate.ToString("ddMMyyyy");
+                int x = Directory.GetFiles("ExportKCS", $"*-*-{d}-*.xlsx").Length + 1;
+                string fileName = $"{x}-{cfg.CurrentKip}-{d}-{DateTime.Now:HHmm}.xlsx";
                 
-                if (!Directory.Exists("ExportKCS")) Directory.CreateDirectory("ExportKCS");
-                
-                int x = Directory.GetFiles("ExportKCS", $"*-*-{dateStr}-*.xlsx").Length + 1;
-                
-                // Định dạng tên theo ý anh hai: x-kíp-ngày-tháng-năm-giờ-phút.xlsx
-                string fileName = $"{x}-{kipStr}-{dateStr}-{timeStr}.xlsx";
-                string filePath = Path.Combine("ExportKCS", fileName);
-
-                using (var workbook = new XLWorkbook())
-                {
-                    var ws = workbook.Worksheets.Add("KCS");
-                    
-                    ws.Cell(1, 1).Value = "BIÊN BẢN GỞI PHÔI KCS";
-                    ws.Cell(2, 1).Value = $"Ngày: {DpDate.SelectedDate?.ToString("dd/MM/yyyy")}";
-                    ws.Cell(2, 2).Value = $"Kíp: {kipStr}";
-                    ws.Cell(3, 1).Value = $"Tổ trưởng: {CbToTruong.Text}";
-                    ws.Cell(3, 2).Value = $"Vận hành: {CbVanHanh.Text}";
-
-                    string[] headers = { "STT", "Phương thức nạp", "Mác phôi", "Mẻ số", "Chiều dài", "Kíp", "Vận hành", "Tổ trưởng" };
-                    for (int i = 0; i < headers.Length; i++) ws.Cell(5, i + 1).Value = headers[i];
-
-                    int rowIdx = 6;
-                    // Lọc những dòng nào có người dùng nhập liệu (Mác phôi hoặc Mẻ số) mới xuất ra
-                    foreach (var item in _dataList.Where(d => !string.IsNullOrEmpty(d.MacPhoi) || !string.IsNullOrEmpty(d.MeSo)))
-                    {
-                        ws.Cell(rowIdx, 1).Value = item.STT;
-                        ws.Cell(rowIdx, 2).Value = item.PhuongThuc;
-                        ws.Cell(rowIdx, 3).Value = item.MacPhoi;
-                        ws.Cell(rowIdx, 4).Value = item.MeSo;
-                        ws.Cell(rowIdx, 5).Value = item.ChieuDai;
-                        ws.Cell(rowIdx, 6).Value = kipStr;
-                        ws.Cell(rowIdx, 7).Value = CbVanHanh.Text;
-                        ws.Cell(rowIdx, 8).Value = CbToTruong.Text;
-                        rowIdx++;
+                using (var wb = new XLWorkbook()) {
+                    var ws = wb.Worksheets.Add("KCS");
+                    ws.Cell(1, 1).Value = "THÔNG TIN: " + cfg.CurrentKip + " | " + cfg.CurrentToTruong + " | " + cfg.CurrentVanHanh;
+                    ws.Cell(3, 1).Value = "STT"; ws.Cell(3, 2).Value = "Phương thức"; ws.Cell(3, 3).Value = "Mác phôi";
+                    ws.Cell(3, 4).Value = "Mẻ số"; ws.Cell(3, 5).Value = "Chiều dài";
+                    int r = 4;
+                    foreach (var item in _dataList.Where(i => !string.IsNullOrEmpty(i.MacPhoi))) {
+                        ws.Cell(r, 1).Value = item.STT; ws.Cell(r, 2).Value = item.PhuongThuc;
+                        ws.Cell(r, 3).Value = item.MacPhoi; ws.Cell(r, 4).Value = item.MeSo; ws.Cell(r, 5).Value = item.ChieuDai;
+                        r++;
                     }
-
                     ws.Columns().AdjustToContents();
-                    workbook.SaveAs(filePath);
+                    wb.SaveAs(Path.Combine("ExportKCS", fileName));
                 }
-
-                MessageBox.Show($"Đã xuất file thành công!\nThư mục: ExportKCS\nTên file: {fileName}", "Hoàn tất", MessageBoxButton.OK, MessageBoxImage.Information);
-                UpdateFileCount();
-            }
-            catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message, "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error); }
+                MessageBox.Show("Đã xuất file: " + fileName); UpdateFileCount();
+            } catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
         }
     }
 }

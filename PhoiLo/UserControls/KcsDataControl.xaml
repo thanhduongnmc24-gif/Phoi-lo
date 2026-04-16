@@ -3,63 +3,25 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:PhoiLo">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="300"/>
-        </Grid.ColumnDefinitions>
-
-        <Grid Grid.Column="0" Margin="0,0,10,0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <TextBlock Text="DỮ LIỆU PHÔI GỞI KCS" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
-            
-            <DataGrid x:Name="KcsDataGrid" Grid.Row="1" AutoGenerateColumns="False" 
-                      CanUserAddRows="False" AlternatingRowBackground="#f2f2f2" 
-                      PreviewKeyDown="KcsDataGrid_PreviewKeyDown">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="STT" Binding="{Binding STT}" Width="40" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Phương thức nạp" Binding="{Binding PhuongThuc}" Width="120"/>
-                    <DataGridTextColumn Header="Mác phôi" Binding="{Binding MacPhoi}" Width="90"/>
-                    <DataGridTextColumn Header="Mẻ số" Binding="{Binding MeSo}" Width="80"/>
-                    <DataGridTextColumn Header="Chiều dài" Binding="{Binding ChieuDai}" Width="80"/>
-                    <DataGridTextColumn Header="Kíp" Binding="{Binding Kip}" Width="50" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Vận hành" Binding="{Binding VanHanh}" Width="120" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Tổ trưởng" Binding="{Binding ToTruong}" Width="120" IsReadOnly="True"/>
-                </DataGrid.Columns>
-            </DataGrid>
-        </Grid>
-
-        <Border Grid.Column="1" Background="#ecf0f1" CornerRadius="5" Padding="15">
-            <StackPanel>
-                <TextBlock Text="THÔNG TIN CHUNG" FontWeight="Bold" Margin="0,0,0,15"/>
-                
-                <TextBlock Text="Ngày tháng:"/>
-                <DatePicker x:Name="DpDate" Margin="0,5,0,15" SelectedDateChanged="DpDate_SelectedDateChanged"/>
-
-                <TextBlock Text="Chọn Kíp làm việc:"/>
-                <ComboBox x:Name="CbKip" Margin="0,5,0,15" SelectionChanged="CbKip_SelectionChanged">
-                    <ComboBoxItem Content="1A"/>
-                    <ComboBoxItem Content="2A"/>
-                    <ComboBoxItem Content="1B"/>
-                    <ComboBoxItem Content="2B"/>
-                    <ComboBoxItem Content="1C"/>
-                    <ComboBoxItem Content="2C"/>
-                </ComboBox>
-
-                <TextBlock Text="Tổ trưởng:"/>
-                <ComboBox x:Name="CbToTruong" Margin="0,5,0,15" DisplayMemberPath="HoTen" SelectionChanged="CbNhanSu_SelectionChanged"/>
-
-                <TextBlock Text="Nhân viên vận hành:"/>
-                <ComboBox x:Name="CbVanHanh" Margin="0,5,0,15" DisplayMemberPath="HoTen" SelectionChanged="CbNhanSu_SelectionChanged"/>
-
-                <Separator Margin="0,10"/>
-                
-                <TextBlock x:Name="TxtFileCount" Text="Số file trong ngày: 0" FontWeight="Bold" Foreground="#d35400" Margin="0,10"/>
-                
-                <Button Content="🚀 XUẤT EXCEL KCS" Click="BtnExportExcel_Click" Height="50" Background="#2980b9" Foreground="White" FontWeight="Bold" BorderThickness="0" Cursor="Hand"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <DockPanel Margin="0,0,0,10">
+            <TextBlock Text="NHẬP DỮ LIỆU PHÔI GỞI KCS" FontWeight="Bold" FontSize="16"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <TextBlock x:Name="TxtFileCount" Text="Số file trong ngày: 0" VerticalAlignment="Center" Margin="0,0,15,0" FontWeight="Bold" Foreground="#d35400"/>
+                <Button Content="🚀 XUẤT EXCEL" Click="BtnExportExcel_Click" Padding="20,5" Background="#2980b9" Foreground="White" FontWeight="Bold" BorderThickness="0" Cursor="Hand"/>
             </StackPanel>
-        </Border>
+        </DockPanel>
+        <DataGrid x:Name="KcsDataGrid" Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False" AlternatingRowBackground="#f2f2f2" PreviewKeyDown="KcsDataGrid_PreviewKeyDown">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="STT" Binding="{Binding STT}" Width="40" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Phương thức nạp" Binding="{Binding PhuongThuc}" Width="150"/>
+                <DataGridTextColumn Header="Mác phôi" Binding="{Binding MacPhoi}" Width="120"/>
+                <DataGridTextColumn Header="Mẻ số" Binding="{Binding MeSo}" Width="100"/>
+                <DataGridTextColumn Header="Chiều dài" Binding="{Binding ChieuDai}" Width="100"/>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </UserControl>
