@@ -1,7 +1,7 @@
 <Window x:Class="PhoiLo.Windows.SettingWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Cài đặt hệ thống" Height="650" Width="600" WindowStartupLocation="CenterOwner">
+        Title="Cài đặt hệ thống" Height="750" Width="600" WindowStartupLocation="CenterOwner">
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="20">
             <TextBlock Text="⚙ CẤU HÌNH HỆ THỐNG" FontWeight="Bold" FontSize="18" Margin="0,0,0,15"/>
@@ -64,7 +64,7 @@
                 </UniformGrid>
             </GroupBox>
 
-            <GroupBox Header="Giao diện bảng &amp; Menu" Padding="10">
+            <GroupBox Header="Giao diện bảng &amp; Menu" Margin="0,0,0,15" Padding="10">
                 <StackPanel>
                     <TextBlock Text="Font chữ bảng:"/>
                     <ComboBox SelectedValuePath="Content" SelectedValue="{Binding TableFontFamily}" Margin="0,5">
@@ -88,7 +88,20 @@
                 </StackPanel>
             </GroupBox>
 
-            <Button Content="💾 LƯU VÀ ĐÓNG" Click="BtnSave_Click" Height="40" Margin="0,20,0,0" Background="#27ae60" Foreground="White" FontWeight="Bold"/>
+            <GroupBox Header="Quản lý nhân sự theo Kíp" Margin="0,0,0,15" Padding="10">
+                <StackPanel>
+                    <TextBlock Text="Nhập: Kíp (A/B/C) - Họ Tên - Chức vụ (Vận hành/Tổ trưởng)" FontStyle="Italic" Margin="0,0,0,5"/>
+                    <DataGrid ItemsSource="{Binding StaffList}" AutoGenerateColumns="False" Height="150" CanUserAddRows="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Kíp (A/B/C)" Binding="{Binding Kip}" Width="80"/>
+                            <DataGridTextColumn Header="Họ Tên" Binding="{Binding HoTen}" Width="*"/>
+                            <DataGridTextColumn Header="Chức vụ" Binding="{Binding ChứcVu}" Width="150"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </GroupBox>
+
+            <Button Content="💾 LƯU VÀ ĐÓNG" Click="BtnSave_Click" Height="40" Margin="0,10,0,10" Background="#27ae60" Foreground="White" FontWeight="Bold"/>
         </StackPanel>
     </ScrollViewer>
 </Window>

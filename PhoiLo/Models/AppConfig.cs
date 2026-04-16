@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -5,6 +6,13 @@ using System.Text.Json;
 
 namespace PhoiLo.Models
 {
+    public class StaffMember
+    {
+        public string Kip { get; set; } = "A"; // A, B, hoặc C
+        public string HoTen { get; set; } = "";
+        public string ChứcVu { get; set; } = "Vận hành"; // "Tổ trưởng" hoặc "Vận hành"
+    }
+
     public class AppConfig : INotifyPropertyChanged
     {
         private string _clientId = "";
@@ -13,21 +21,23 @@ namespace PhoiLo.Models
         private string _range = "Phoi!A11:J410";
 
         // --- ĐỘ RỘNG 10 CỘT ---
-        private double _col1Width = 50;  // STT
-        private double _col2Width = 120; // Phương thức nạp
-        private double _col3Width = 90;  // Mác phôi
-        private double _col4Width = 80;  // Mẻ số
-        private double _col5Width = 110; // Số cây nạp lò
-        private double _col6Width = 110; // Ra sàn nguội
-        private double _col7Width = 110; // Hư công nghệ
-        private double _col8Width = 80;  // Hồi lò
-        private double _col9Width = 180; // Tổng số thanh
-        private double _col10Width = 100; // Chiều dài
+        private double _col1Width = 50;  
+        private double _col2Width = 120; 
+        private double _col3Width = 90;  
+        private double _col4Width = 80;  
+        private double _col5Width = 110; 
+        private double _col6Width = 110; 
+        private double _col7Width = 110; 
+        private double _col8Width = 80;  
+        private double _col9Width = 180; 
+        private double _col10Width = 100; 
 
         private double _tableFontSize = 14;
         private double _menuFontSize = 16;
         private string _tableFontFamily = "Segoe UI";
         private string _menuFontFamily = "Segoe UI";
+
+        private ObservableCollection<StaffMember> _staffList = new ObservableCollection<StaffMember>();
 
         public string ClientId { get => _clientId; set { _clientId = value; OnPropertyChanged(); } }
         public string ClientSecret { get => _clientSecret; set { _clientSecret = value; OnPropertyChanged(); } }
@@ -49,6 +59,8 @@ namespace PhoiLo.Models
         public double MenuFontSize { get => _menuFontSize; set { _menuFontSize = value; OnPropertyChanged(); } }
         public string TableFontFamily { get => _tableFontFamily; set { _tableFontFamily = value; OnPropertyChanged(); } }
         public string MenuFontFamily { get => _menuFontFamily; set { _menuFontFamily = value; OnPropertyChanged(); } }
+
+        public ObservableCollection<StaffMember> StaffList { get => _staffList; set { _staffList = value; OnPropertyChanged(); } }
 
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string? name = null)
