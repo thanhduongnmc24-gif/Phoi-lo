@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
+using System.Windows;
 
 namespace PhoiLo.Models
 {
@@ -14,36 +15,36 @@ namespace PhoiLo.Models
         public string ChucVu { get; set; } = "Vận hành"; 
     }
 
+    // [Suy luận] Cầu nối dữ liệu để DataGrid Column có thể hiểu được Binding
+    public class BindingProxy : Freezable
+    {
+        protected override Freezable CreateInstanceCore() => new BindingProxy();
+        public static readonly DependencyProperty DataProperty = DependencyProperty.Register("Data", typeof(object), typeof(BindingProxy), new PropertyMetadata(null));
+        public object Data { get => GetValue(DataProperty); set => SetValue(DataProperty, value); }
+    }
+
     public class AppConfig : INotifyPropertyChanged
     {
-        // --- Độ rộng 10 cột bảng Pulpit 1 ---
+        // Độ rộng cột Pulpit 1
         private double _col1Width = 50; private double _col2Width = 120; private double _col3Width = 90;
         private double _col4Width = 80; private double _col5Width = 110; private double _col6Width = 110;
         private double _col7Width = 110; private double _col8Width = 80; private double _col9Width = 180;
         private double _col10Width = 100;
 
-        // --- [Suy luận] Độ rộng 6 cột bảng KCS mới thêm ---
-        private double _kcsCol1Width = 40;  // STT
-        private double _kcsCol2Width = 150; // Phương thức
-        private double _kcsCol3Width = 120; // Mác phôi
-        private double _kcsCol4Width = 100; // Mẻ số
-        private double _kcsCol5Width = 100; // Số cây nạp lò
-        private double _kcsCol6Width = 100; // Chiều dài
+        // Độ rộng cột KCS
+        private double _kcsCol1Width = 40;  
+        private double _kcsCol2Width = 150; 
+        private double _kcsCol3Width = 120; 
+        private double _kcsCol4Width = 100; 
+        private double _kcsCol5Width = 100; 
+        private double _kcsCol6Width = 100; 
 
-        private string _clientId = "";
-        private string _clientSecret = "";
-        private string _sheetId = "";
-        private string _range = "Phoi!A11:J410";
+        private string _clientId = ""; private string _clientSecret = "";
+        private string _sheetId = ""; private string _range = "Phoi!A11:J410";
         private double _tableFontSize = 14; private double _menuFontSize = 16;
         private string _tableFontFamily = "Segoe UI"; private string _menuFontFamily = "Segoe UI";
 
-        private ObservableCollection<StaffMember> _staffList = new ObservableCollection<StaffMember>();
-        private DateTime _currentDate = DateTime.Now;
-        private string _currentKip = "1A";
-        private string _currentToTruong = "";
-        private string _currentVanHanh = "";
-
-        // Properties cho bảng Pulpit
+        // Properties (KcsCol2Width và KcsCol4Width đã được Tèo kiểm tra kỹ)
         public double Col1Width { get => _col1Width; set { _col1Width = value; OnPropertyChanged(); } }
         public double Col2Width { get => _col2Width; set { _col2Width = value; OnPropertyChanged(); } }
         public double Col3Width { get => _col3Width; set { _col3Width = value; OnPropertyChanged(); } }
@@ -55,7 +56,6 @@ namespace PhoiLo.Models
         public double Col9Width { get => _col9Width; set { _col9Width = value; OnPropertyChanged(); } }
         public double Col10Width { get => _col10Width; set { _col10Width = value; OnPropertyChanged(); } }
 
-        // --- Properties cho bảng KCS ---
         public double KcsCol1Width { get => _kcsCol1Width; set { _kcsCol1Width = value; OnPropertyChanged(); } }
         public double KcsCol2Width { get => _kcsCol2Width; set { _kcsCol2Width = value; OnPropertyChanged(); } }
         public double KcsCol3Width { get => _kcsCol3Width; set { _kcsCol3Width = value; OnPropertyChanged(); } }
@@ -71,10 +71,20 @@ namespace PhoiLo.Models
         public double MenuFontSize { get => _menuFontSize; set { _menuFontSize = value; OnPropertyChanged(); } }
         public string TableFontFamily { get => _tableFontFamily; set { _tableFontFamily = value; OnPropertyChanged(); } }
         public string MenuFontFamily { get => _menuFontFamily; set { _menuFontFamily = value; OnPropertyChanged(); } }
+
+        private ObservableCollection<StaffMember> _staffList = new ObservableCollection<StaffMember>();
         public ObservableCollection<StaffMember> StaffList { get => _staffList; set { _staffList = value; OnPropertyChanged(); } }
+        
+        private DateTime _currentDate = DateTime.Now;
         public DateTime CurrentDate { get => _currentDate; set { _currentDate = value; OnPropertyChanged(); } }
+        
+        private string _currentKip = "1A";
         public string CurrentKip { get => _currentKip; set { _currentKip = value; OnPropertyChanged(); } }
+        
+        private string _currentToTruong = "";
         public string CurrentToTruong { get => _currentToTruong; set { _currentToTruong = value; OnPropertyChanged(); } }
+        
+        private string _currentVanHanh = "";
         public string CurrentVanHanh { get => _currentVanHanh; set { _currentVanHanh = value; OnPropertyChanged(); } }
 
         public event PropertyChangedEventHandler? PropertyChanged;

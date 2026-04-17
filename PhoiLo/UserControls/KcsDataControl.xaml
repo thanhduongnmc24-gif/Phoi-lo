@@ -1,7 +1,12 @@
 <UserControl x:Class="PhoiLo.UserControls.KcsDataControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:PhoiLo">
+             xmlns:local="clr-namespace:PhoiLo"
+             xmlns:models="clr-namespace:PhoiLo.Models">
+    <UserControl.Resources>
+        <models:BindingProxy x:Key="Proxy" Data="{Binding Source={x:Static local:App.Config}}"/>
+    </UserControl.Resources>
+
     <Grid DataContext="{Binding Source={x:Static local:App.Config}}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -20,8 +25,8 @@
         <DataGrid x:Name="KcsDataGrid" Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False" 
                   AlternatingRowBackground="#f2f2f2" PreviewKeyDown="KcsDataGrid_PreviewKeyDown"
                   SelectionUnit="CellOrRowHeader"
-                  FontSize="{Binding Source={x:Static local:App.Config}, Path=TableFontSize}" 
-                  FontFamily="{Binding Source={x:Static local:App.Config}, Path=TableFontFamily}">
+                  FontSize="{Binding Data.TableFontSize, Source={StaticResource Proxy}}" 
+                  FontFamily="{Binding Data.TableFontFamily, Source={StaticResource Proxy}}">
             <DataGrid.Resources>
                 <Style TargetType="DataGridColumnHeader">
                     <Setter Property="ContentTemplate">
@@ -29,24 +34,23 @@
                             <DataTemplate>
                                 <TextBlock Text="{Binding}" TextWrapping="Wrap" TextAlignment="Center" 
                                            HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"
-                                           FontSize="{Binding Source={x:Static local:App.Config}, Path=TableFontSize}" 
-                                           FontFamily="{Binding Source={x:Static local:App.Config}, Path=TableFontFamily}"/>
+                                           FontSize="{Binding Data.TableFontSize, Source={StaticResource Proxy}}" 
+                                           FontFamily="{Binding Data.TableFontFamily, Source={StaticResource Proxy}}"/>
                             </DataTemplate>
                         </Setter.Value>
                     </Setter>
                     <Setter Property="Padding" Value="5"/>
                     <Setter Property="Background" Value="#2c3e50"/>
                     <Setter Property="Foreground" Value="White"/>
-                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
                 </Style>
             </DataGrid.Resources>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="STT" Binding="{Binding STT}" Width="{Binding Source={x:Static local:App.Config}, Path=KcsCol1Width}"/>
-                <DataGridTextColumn Header="Phương thức nạp" Binding="{Binding PhuongThuc}" Width="{Binding Source={x:Static local:App.Config}, Path=KcsCol2Width}"/>
-                <DataGridTextColumn Header="Mác phôi" Binding="{Binding MacPhoi}" Width="{Binding Source={x:Static local:App.Config}, Path=KcsCol3Width}"/>
-                <DataGridTextColumn Header="Mẻ số" Binding="{Binding MeSo}" Width="{Binding Source={x:Static local:App.Config}, Path=KcsCol4Width}"/>
-                <DataGridTextColumn Header="Số cây nạp lò" Binding="{Binding SoCayNap}" Width="{Binding Source={x:Static local:App.Config}, Path=KcsCol5Width}"/>
-                <DataGridTextColumn Header="Chiều dài" Binding="{Binding ChieuDai}" Width="{Binding Source={x:Static local:App.Config}, Path=KcsCol6Width}"/>
+                <DataGridTextColumn Header="STT" Binding="{Binding STT}" Width="{Binding Data.KcsCol1Width, Source={StaticResource Proxy}}"/>
+                <DataGridTextColumn Header="Phương thức nạp" Binding="{Binding PhuongThuc}" Width="{Binding Data.KcsCol2Width, Source={StaticResource Proxy}}"/>
+                <DataGridTextColumn Header="Mác phôi" Binding="{Binding MacPhoi}" Width="{Binding Data.KcsCol3Width, Source={StaticResource Proxy}}"/>
+                <DataGridTextColumn Header="Mẻ số" Binding="{Binding MeSo}" Width="{Binding Data.KcsCol4Width, Source={StaticResource Proxy}}"/>
+                <DataGridTextColumn Header="Số cây nạp lò" Binding="{Binding SoCayNap}" Width="{Binding Data.KcsCol5Width, Source={StaticResource Proxy}}"/>
+                <DataGridTextColumn Header="Chiều dài" Binding="{Binding ChieuDai}" Width="{Binding Data.KcsCol6Width, Source={StaticResource Proxy}}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
