@@ -18,10 +18,11 @@
                   AlternatingRowBackground="#f2f2f2" PreviewKeyDown="KcsDataGrid_PreviewKeyDown"
                   SelectionUnit="CellOrRowHeader">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="STT" Binding="{Binding STT}" Width="40" IsReadOnly="True"/>
+                <DataGridTextColumn Header="STT" Binding="{Binding STT}" Width="40"/>
                 <DataGridTextColumn Header="Phương thức nạp" Binding="{Binding PhuongThuc}" Width="150"/>
                 <DataGridTextColumn Header="Mác phôi" Binding="{Binding MacPhoi}" Width="120"/>
                 <DataGridTextColumn Header="Mẻ số" Binding="{Binding MeSo}" Width="100"/>
+                <DataGridTextColumn Header="Số cây nạp lò" Binding="{Binding SoCayNap}" Width="100"/>
                 <DataGridTextColumn Header="Chiều dài" Binding="{Binding ChieuDai}" Width="100"/>
             </DataGrid.Columns>
         </DataGrid>

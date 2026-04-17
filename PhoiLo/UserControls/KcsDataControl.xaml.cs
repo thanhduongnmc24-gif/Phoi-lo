@@ -14,6 +14,7 @@ namespace PhoiLo.UserControls
         public string PhuongThuc { get; set; } = "";
         public string MacPhoi { get; set; } = "";
         public string MeSo { get; set; } = "";
+        public string SoCayNap { get; set; } = ""; // Mới thêm
         public string ChieuDai { get; set; } = "";
     }
 
@@ -33,10 +34,12 @@ namespace PhoiLo.UserControls
                 int start = KcsDataGrid.SelectedIndex < 0 ? 0 : KcsDataGrid.SelectedIndex;
                 for (int i = 0; i < lines.Length && (start + i) < 50; i++) {
                     string[] c = lines[i].Split('\t');
+                    // Cập nhật lại dải copy để bao gồm cột Số cây nạp lò
                     if (c.Length > 0) _dataList[start + i].PhuongThuc = c[0];
                     if (c.Length > 1) _dataList[start + i].MacPhoi = c[1];
                     if (c.Length > 2) _dataList[start + i].MeSo = c[2];
-                    if (c.Length > 3) _dataList[start + i].ChieuDai = c[3];
+                    if (c.Length > 3) _dataList[start + i].SoCayNap = c[3];
+                    if (c.Length > 4) _dataList[start + i].ChieuDai = c[4];
                 }
                 KcsDataGrid.Items.Refresh(); e.Handled = true;
             }
@@ -58,31 +61,47 @@ namespace PhoiLo.UserControls
         private void BtnExportExcel_Click(object sender, RoutedEventArgs e) {
             try {
                 var cfg = App.Config;
-                string dateStr = cfg.CurrentDate.ToString("dd-MM-yyyy");
+                string dateExcelStr = cfg.CurrentDate.ToString("dd/MM/yyyy"); // Định dạng hiển thị trong Excel
+                string dateFolderStr = cfg.CurrentDate.ToString("dd-MM-yyyy"); // Định dạng tên thư mục
                 string kipStr = cfg.CurrentKip;
                 
-                string subFolderName = $"Kip-{kipStr}-Ngay-{dateStr}";
+                string subFolderName = $"Kip-{kipStr}-Ngay-{dateFolderStr}";
                 string fullFolderPath = Path.Combine("ExportKCS", subFolderName);
                 if (!Directory.Exists(fullFolderPath)) Directory.CreateDirectory(fullFolderPath);
                 
                 int x = Directory.GetFiles(fullFolderPath, "*.xlsx").Length + 1;
-                string fileName = $"{x}-{kipStr}-{dateStr}-{DateTime.Now:HHmm}.xlsx";
+                string fileName = $"{x}-{kipStr}-{dateFolderStr}-{DateTime.Now:HHmm}.xlsx";
                 string filePath = Path.Combine(fullFolderPath, fileName);
                 
                 using (var wb = new XLWorkbook()) {
                     var ws = wb.Worksheets.Add("KCS");
-                    ws.Cell(1, 1).Value = $"THÔNG TIN: {kipStr} | Ngày: {dateStr}";
-                    ws.Cell(2, 1).Value = $"Tổ trưởng: {cfg.CurrentToTruong} | Vận hành: {cfg.CurrentVanHanh}";
                     
-                    ws.Cell(4, 1).Value = "STT"; ws.Cell(4, 2).Value = "Phương thức"; ws.Cell(4, 3).Value = "Mác phôi";
-                    ws.Cell(4, 4).Value = "Mẻ số"; ws.Cell(4, 5).Value = "Chiều dài";
-                    int r = 5;
+                    // [Suy luận] Viết vào ô A1, sau đó gộp từ A1 đến F1 (6 cột)
+                    ws.Cell(1, 1).Value = $"Kíp {kipStr} ngày {dateExcelStr}";
+                    ws.Range("A1:F1").Merge();
+                    ws.Cell(1, 1).Style.Font.Bold = true;
+                    ws.Cell(1, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    
+                    // Bỏ dòng 2, viết tiêu đề vào dòng 3
+                    ws.Cell(3, 1).Value = "STT"; 
+                    ws.Cell(3, 2).Value = "Phương thức nạp"; 
+                    ws.Cell(3, 3).Value = "Mác phôi";
+                    ws.Cell(3, 4).Value = "Mẻ số"; 
+                    ws.Cell(3, 5).Value = "Số cây nạp lò"; 
+                    ws.Cell(3, 6).Value = "Chiều dài";
+                    ws.Range("A3:F3").Style.Font.Bold = true;
+
+                    int r = 4;
                     foreach (var item in _dataList.Where(i => !string.IsNullOrEmpty(i.MacPhoi) || !string.IsNullOrEmpty(i.MeSo))) {
-                        ws.Cell(r, 1).Value = item.STT; ws.Cell(r, 2).Value = item.PhuongThuc;
-                        ws.Cell(r, 3).Value = item.MacPhoi; ws.Cell(r, 4).Value = item.MeSo; ws.Cell(r, 5).Value = item.ChieuDai;
+                        ws.Cell(r, 1).Value = item.STT; 
+                        ws.Cell(r, 2).Value = item.PhuongThuc;
+                        ws.Cell(r, 3).Value = item.MacPhoi; 
+                        ws.Cell(r, 4).Value = item.MeSo; 
+                        ws.Cell(r, 5).Value = item.SoCayNap;
+                        ws.Cell(r, 6).Value = item.ChieuDai;
                         r++;
                     }
-                    ws.Columns().AdjustToContents();
+                    ws.Columns().AdjustToContents(); // Tự động co giãn cột cho vừa chữ
                     wb.SaveAs(filePath);
                 }
                 MessageBox.Show($"Đã xuất file vào thư mục: ExportKCS\\{subFolderName}"); 
