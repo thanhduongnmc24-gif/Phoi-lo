@@ -20,14 +20,17 @@
         <DataGrid x:Name="KcsDataGrid" Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False" 
                   AlternatingRowBackground="#f2f2f2" PreviewKeyDown="KcsDataGrid_PreviewKeyDown"
                   SelectionUnit="CellOrRowHeader"
-                  FontSize="{Binding TableFontSize}" FontFamily="{Binding TableFontFamily}">
+                  FontSize="{Binding Source={x:Static local:App.Config}, Path=TableFontSize}" 
+                  FontFamily="{Binding Source={x:Static local:App.Config}, Path=TableFontFamily}">
             <DataGrid.Resources>
                 <Style TargetType="DataGridColumnHeader">
                     <Setter Property="ContentTemplate">
                         <Setter.Value>
                             <DataTemplate>
                                 <TextBlock Text="{Binding}" TextWrapping="Wrap" TextAlignment="Center" 
-                                           HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"
+                                           FontSize="{Binding Source={x:Static local:App.Config}, Path=TableFontSize}" 
+                                           FontFamily="{Binding Source={x:Static local:App.Config}, Path=TableFontFamily}"/>
                             </DataTemplate>
                         </Setter.Value>
                     </Setter>

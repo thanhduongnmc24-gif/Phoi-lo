@@ -21,16 +21,19 @@
         </DockPanel>
 
         <DataGrid x:Name="MainDataGrid" Grid.Row="1" Grid.Column="0" Margin="0,0,10,0"
-                  FontSize="{Binding TableFontSize}" FontFamily="{Binding TableFontFamily}"
                   AutoGenerateColumns="False" IsReadOnly="False" AlternatingRowBackground="#f2f2f2"
-                  SelectionUnit="CellOrRowHeader">
+                  SelectionUnit="CellOrRowHeader"
+                  FontSize="{Binding Source={x:Static local:App.Config}, Path=TableFontSize}" 
+                  FontFamily="{Binding Source={x:Static local:App.Config}, Path=TableFontFamily}">
             <DataGrid.Resources>
                 <Style TargetType="DataGridColumnHeader">
                     <Setter Property="ContentTemplate">
                         <Setter.Value>
                             <DataTemplate>
                                 <TextBlock Text="{Binding}" TextWrapping="Wrap" TextAlignment="Center" 
-                                           HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"
+                                           FontSize="{Binding Source={x:Static local:App.Config}, Path=TableFontSize}" 
+                                           FontFamily="{Binding Source={x:Static local:App.Config}, Path=TableFontFamily}"/>
                             </DataTemplate>
                         </Setter.Value>
                     </Setter>
