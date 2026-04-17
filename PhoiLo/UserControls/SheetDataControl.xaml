@@ -9,13 +9,16 @@
         </Grid.RowDefinitions>
 
         <DockPanel Margin="0,0,0,10">
-            <TextBlock Text="DỮ LIỆU PHÔI RA LÒ" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
-            <Button Content="🔄 Tải lại dữ liệu" Click="BtnReload_Click" HorizontalAlignment="Right" Padding="15,5" Background="#2ecc71" Foreground="White" FontWeight="Bold" BorderThickness="0"/>
+            <TextBlock Text="DỮ LIỆU PHÔI GỞI PULPIT 1" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="🚀 Gởi phôi lên gg sheet" Click="BtnPush_Click" Padding="15,5" Background="#3498db" Foreground="White" FontWeight="Bold" BorderThickness="0" Margin="0,0,10,0" Cursor="Hand"/>
+                <Button Content="🔄 Tải lại dữ liệu" Click="BtnReload_Click" Padding="15,5" Background="#2ecc71" Foreground="White" FontWeight="Bold" BorderThickness="0" Cursor="Hand"/>
+            </StackPanel>
         </DockPanel>
 
         <DataGrid x:Name="MainDataGrid" Grid.Row="1" 
                   FontSize="{Binding TableFontSize}" FontFamily="{Binding TableFontFamily}"
-                  AutoGenerateColumns="False" IsReadOnly="True" AlternatingRowBackground="#f2f2f2"
+                  AutoGenerateColumns="False" IsReadOnly="False" AlternatingRowBackground="#f2f2f2"
                   SelectionUnit="CellOrRowHeader">
             
             <DataGrid.Resources>
@@ -40,7 +43,7 @@
                 <DataGridTextColumn Header="Ra sàn nguội" Binding="{Binding [Ra sàn nguội]}" Width="{Binding Source={x:Static local:App.Config}, Path=Col6Width}"/>
                 <DataGridTextColumn Header="Hư công nghệ" Binding="{Binding [Hư công nghệ]}" Width="{Binding Source={x:Static local:App.Config}, Path=Col7Width}"/>
                 <DataGridTextColumn Header="Hồi lò" Binding="{Binding [Hồi lò]}" Width="{Binding Source={x:Static local:App.Config}, Path=Col8Width}"/>
-                <DataGridTextColumn Header="Tổng số thanh khi hết mẻ" Binding="{Binding [Tổng số thanh khi hết mẻ]}" Width="{Binding Source={x:Static local:App.Config}, Path=Col9Width}"/>
+                <DataGridTextColumn Header="Tổng số thanh" Binding="{Binding [Tổng số thanh khi hết mẻ]}" Width="{Binding Source={x:Static local:App.Config}, Path=Col9Width}"/>
                 <DataGridTextColumn Header="Chiều dài" Binding="{Binding [Chiều dài]}" Width="{Binding Source={x:Static local:App.Config}, Path=Col10Width}"/>
             </DataGrid.Columns>
         </DataGrid>

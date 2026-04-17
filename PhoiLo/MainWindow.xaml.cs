@@ -8,7 +8,6 @@ namespace PhoiLo
 {
     public partial class MainWindow : Window
     {
-        // [Suy luận] Giữ lại nguyên vẹn màn hình để không bị mất dữ liệu
         private SheetDataControl _sheetControl = new SheetDataControl();
         private KcsDataControl _kcsControl = new KcsDataControl();
 
@@ -38,7 +37,13 @@ namespace PhoiLo
             if (CbGlobalVanHanh.Items.Count > 0) CbGlobalVanHanh.SelectedIndex = 0;
         }
 
-        private void BtnLoadSheet_Click(object sender, RoutedEventArgs e) => MainContentArea.Content = _sheetControl;
+        private void BtnLoadSheet_Click(object sender, RoutedEventArgs e)
+        {
+            // [Suy luận] Khôi phục tính năng tự nạp dữ liệu khi bấm tab
+            _sheetControl.LoadDataFromGoogle(); 
+            MainContentArea.Content = _sheetControl;
+        }
+
         private void BtnLoadKcs_Click(object sender, RoutedEventArgs e) => MainContentArea.Content = _kcsControl;
 
         private void BtnOpenSetting_Click(object sender, RoutedEventArgs e) {

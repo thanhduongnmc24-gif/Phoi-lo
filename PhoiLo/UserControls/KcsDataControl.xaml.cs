@@ -14,7 +14,7 @@ namespace PhoiLo.UserControls
         public string PhuongThuc { get; set; } = "";
         public string MacPhoi { get; set; } = "";
         public string MeSo { get; set; } = "";
-        public string SoCayNap { get; set; } = ""; // Mới thêm
+        public string SoCayNap { get; set; } = "";
         public string ChieuDai { get; set; } = "";
     }
 
@@ -30,18 +30,26 @@ namespace PhoiLo.UserControls
 
         private void KcsDataGrid_PreviewKeyDown(object sender, KeyEventArgs e) {
             if (e.Key == Key.V && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control) {
-                string[] lines = Clipboard.GetText().Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+                string clipboardText = Clipboard.GetText();
+                if (string.IsNullOrEmpty(clipboardText)) return;
+
+                string[] lines = clipboardText.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
                 int start = KcsDataGrid.SelectedIndex < 0 ? 0 : KcsDataGrid.SelectedIndex;
-                for (int i = 0; i < lines.Length && (start + i) < 50; i++) {
+
+                for (int i = 0; i < lines.Length && (start + i) < _dataList.Count; i++) {
                     string[] c = lines[i].Split('\t');
-                    // Cập nhật lại dải copy để bao gồm cột Số cây nạp lò
-                    if (c.Length > 0) _dataList[start + i].PhuongThuc = c[0];
-                    if (c.Length > 1) _dataList[start + i].MacPhoi = c[1];
-                    if (c.Length > 2) _dataList[start + i].MeSo = c[2];
-                    if (c.Length > 3) _dataList[start + i].SoCayNap = c[3];
-                    if (c.Length > 4) _dataList[start + i].ChieuDai = c[4];
+                    var row = _dataList[start + i];
+                    
+                    // [Suy luận] Chỉnh lại chỉ số để c[0] khớp với STT, c[1] khớp với Phương thức...
+                    if (c.Length > 0) row.STT = c[0];
+                    if (c.Length > 1) row.PhuongThuc = c[1];
+                    if (c.Length > 2) row.MacPhoi = c[2];
+                    if (c.Length > 3) row.MeSo = c[3];
+                    if (c.Length > 4) row.SoCayNap = c[4];
+                    if (c.Length > 5) row.ChieuDai = c[5];
                 }
-                KcsDataGrid.Items.Refresh(); e.Handled = true;
+                KcsDataGrid.Items.Refresh(); 
+                e.Handled = true;
             }
         }
 
@@ -61,8 +69,8 @@ namespace PhoiLo.UserControls
         private void BtnExportExcel_Click(object sender, RoutedEventArgs e) {
             try {
                 var cfg = App.Config;
-                string dateExcelStr = cfg.CurrentDate.ToString("dd/MM/yyyy"); // Định dạng hiển thị trong Excel
-                string dateFolderStr = cfg.CurrentDate.ToString("dd-MM-yyyy"); // Định dạng tên thư mục
+                string dateExcelStr = cfg.CurrentDate.ToString("dd/MM/yyyy");
+                string dateFolderStr = cfg.CurrentDate.ToString("dd-MM-yyyy");
                 string kipStr = cfg.CurrentKip;
                 
                 string subFolderName = $"Kip-{kipStr}-Ngay-{dateFolderStr}";
@@ -76,13 +84,11 @@ namespace PhoiLo.UserControls
                 using (var wb = new XLWorkbook()) {
                     var ws = wb.Worksheets.Add("KCS");
                     
-                    // [Suy luận] Viết vào ô A1, sau đó gộp từ A1 đến F1 (6 cột)
                     ws.Cell(1, 1).Value = $"Kíp {kipStr} ngày {dateExcelStr}";
                     ws.Range("A1:F1").Merge();
                     ws.Cell(1, 1).Style.Font.Bold = true;
                     ws.Cell(1, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                     
-                    // Bỏ dòng 2, viết tiêu đề vào dòng 3
                     ws.Cell(3, 1).Value = "STT"; 
                     ws.Cell(3, 2).Value = "Phương thức nạp"; 
                     ws.Cell(3, 3).Value = "Mác phôi";
@@ -101,12 +107,13 @@ namespace PhoiLo.UserControls
                         ws.Cell(r, 6).Value = item.ChieuDai;
                         r++;
                     }
-                    ws.Columns().AdjustToContents(); // Tự động co giãn cột cho vừa chữ
+                    ws.Columns().AdjustToContents();
                     wb.SaveAs(filePath);
                 }
                 MessageBox.Show($"Đã xuất file vào thư mục: ExportKCS\\{subFolderName}"); 
                 UpdateFileCount();
-            } catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
+            }
+            catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
         }
     }
 }

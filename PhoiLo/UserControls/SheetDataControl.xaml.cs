@@ -1,11 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
+using Google.Apis.Sheets.v4.Data;
 using Google.Apis.Util.Store;
 
 namespace PhoiLo.UserControls
@@ -20,27 +23,15 @@ namespace PhoiLo.UserControls
 
         private void BtnReload_Click(object sender, RoutedEventArgs e) => LoadDataFromGoogle();
 
-        private async void LoadDataFromGoogle()
+        public async void LoadDataFromGoogle()
         {
             var config = App.Config;
-            // Lưu lại cấu hình hiện tại trước khi gọi API
-            config.SaveToFile();
-
             if (string.IsNullOrEmpty(config.ClientId) || string.IsNullOrEmpty(config.SheetId)) return;
 
             try
             {
-                UserCredential credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
-                    new ClientSecrets { ClientId = config.ClientId, ClientSecret = config.ClientSecret },
-                    new[] { SheetsService.Scope.SpreadsheetsReadonly }, 
-                    "user", CancellationToken.None, new FileDataStore("PhoiLo.Auth"));
-
-                var service = new SheetsService(new BaseClientService.Initializer() 
-                { 
-                    HttpClientInitializer = credential, 
-                    ApplicationName = "PhoiLo" 
-                });
-
+                UserCredential credential = await GetCredential();
+                var service = new SheetsService(new BaseClientService.Initializer() { HttpClientInitializer = credential, ApplicationName = "PhoiLo" });
                 var response = await service.Spreadsheets.Values.Get(config.SheetId, config.Range).ExecuteAsync();
 
                 if (response.Values != null)
@@ -61,10 +52,50 @@ namespace PhoiLo.UserControls
                     MainDataGrid.ItemsSource = dt.DefaultView;
                 }
             }
-            catch (Exception ex) 
-            { 
-                MessageBox.Show("Lỗi kết nối: " + ex.Message); 
+            catch (Exception ex) { MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message); }
+        }
+
+        private async void BtnPush_Click(object sender, RoutedEventArgs e)
+        {
+            var config = App.Config;
+            if (MainDataGrid.ItemsSource == null) return;
+
+            try
+            {
+                // [Suy luận] Sửa lỗi CS8602 bằng cách dùng as và kiểm tra null an toàn
+                var dv = MainDataGrid.ItemsSource as DataView;
+                if (dv?.Table == null) return;
+
+                var dt = dv.Table;
+                var values = new List<IList<object>>();
+
+                foreach (DataRow row in dt.Rows)
+                {
+                    // [Suy luận] Sửa lỗi CS8620 bằng cách lọc null trước khi ép kiểu ToList
+                    var rowData = row.ItemArray.Select(x => x ?? "").ToList();
+                    values.Add(rowData);
+                }
+
+                UserCredential credential = await GetCredential();
+                var service = new SheetsService(new BaseClientService.Initializer() { HttpClientInitializer = credential, ApplicationName = "PhoiLo" });
+                
+                ValueRange body = new ValueRange() { Values = values };
+                var request = service.Spreadsheets.Values.Update(body, config.SheetId, config.Range);
+                request.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.USERENTERED;
+                
+                await request.ExecuteAsync();
+                MessageBox.Show("🚀 Đã gởi phôi lên Google Sheets thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
             }
+            catch (Exception ex) { MessageBox.Show("Lỗi gởi dữ liệu: " + ex.Message); }
+        }
+
+        private async System.Threading.Tasks.Task<UserCredential> GetCredential()
+        {
+            var config = App.Config;
+            return await GoogleWebAuthorizationBroker.AuthorizeAsync(
+                new ClientSecrets { ClientId = config.ClientId, ClientSecret = config.ClientSecret },
+                new[] { SheetsService.Scope.Spreadsheets }, 
+                "user", CancellationToken.None, new FileDataStore("PhoiLo.Auth"));
         }
     }
 }
