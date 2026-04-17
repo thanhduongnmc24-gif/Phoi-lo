@@ -59,13 +59,15 @@
         </ScrollViewer>
 
         <GroupBox Grid.Column="1" Header="DANH SÁCH NHÂN SỰ (Kíp A/B/C)" Padding="10">
-            <DataGrid ItemsSource="{Binding StaffList}" AutoGenerateColumns="False" CanUserAddRows="True" AlternatingRowBackground="#f2f2f2">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Kíp" Binding="{Binding Kip}" Width="60"/>
-                    <DataGridTextColumn Header="Họ Tên" Binding="{Binding HoTen}" Width="*"/>
-                    <DataGridTextColumn Header="Chức vụ" Binding="{Binding ChucVu}" Width="150"/> 
-                </DataGrid.Columns>
-            </DataGrid>
-        </GroupBox>
-    </Grid>
+    <DataGrid ItemsSource="{Binding StaffList}" AutoGenerateColumns="False" CanUserAddRows="True" 
+              AlternatingRowBackground="#f2f2f2"
+              FontSize="{Binding TableFontSize}" FontFamily="{Binding TableFontFamily}">
+        <DataGrid.Columns>
+            <DataGridTextColumn Header="Kíp" Binding="{Binding Kip}" Width="60"/>
+            <DataGridTextColumn Header="Họ Tên" Binding="{Binding HoTen}" Width="*"/>
+            <DataGridTextColumn Header="Chức vụ" Binding="{Binding ChucVu}" Width="150"/> 
+        </DataGrid.Columns>
+    </DataGrid>
+</GroupBox>
+</Grid>
 </Window>
