@@ -17,17 +17,19 @@
         </Grid.RowDefinitions>
         <TextBlock Grid.Row="0" Text="DANH SÁCH PHÔI NÓNG" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
         
-        <DataGrid x:Name="HotDataGrid" Grid.Row="1" Grid.Column="0" AutoGenerateColumns="False" IsReadOnly="True" AlternatingRowBackground="#fff4e6">
+        <DataGrid x:Name="HotDataGrid" Grid.Row="1" Grid.Column="0" AutoGenerateColumns="False" IsReadOnly="True" AlternatingRowBackground="#fff4e6"
+                  FontSize="{Binding Data.TableFontSize, Source={StaticResource Proxy}}" 
+                  FontFamily="{Binding Data.TableFontFamily, Source={StaticResource Proxy}}">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="STT" Binding="{Binding [STT]}" Width="40"/>
-                <DataGridTextColumn Header="Phương thức" Binding="{Binding [Phương thức nạp]}" Width="120"/>
-                <DataGridTextColumn Header="Mác phôi" Binding="{Binding [Mác phôi]}" Width="100"/>
-                <DataGridTextColumn Header="Mẻ số" Binding="{Binding [Mẻ số]}" Width="80"/>
-                <DataGridTextColumn Header="Số cây" Binding="{Binding [Số cây nạp lò]}" Width="80"/>
-                <DataGridTextColumn Header="Ra sàn" Binding="{Binding [Ra sàn nguội]}" Width="80"/>
-                <DataGridTextColumn Header="Hư CN" Binding="{Binding [Hư công nghệ]}" Width="80"/>
-                <DataGridTextColumn Header="Hồi lò" Binding="{Binding [Hồi lò]}" Width="80"/>
-                <DataGridTextColumn Header="Chiều dài" Binding="{Binding [Chiều dài]}" Width="80"/>
+                <DataGridTextColumn Header="STT" Binding="{Binding [STT]}" />
+                <DataGridTextColumn Header="Phương thức" Binding="{Binding [Phương thức nạp]}" />
+                <DataGridTextColumn Header="Mác phôi" Binding="{Binding [Mác phôi]}" />
+                <DataGridTextColumn Header="Mẻ số" Binding="{Binding [Mẻ số]}" />
+                <DataGridTextColumn Header="Số cây" Binding="{Binding [Số cây nạp lò]}" />
+                <DataGridTextColumn Header="Ra sàn" Binding="{Binding [Ra sàn nguội]}" />
+                <DataGridTextColumn Header="Hư CN" Binding="{Binding [Hư công nghệ]}" />
+                <DataGridTextColumn Header="Hồi lò" Binding="{Binding [Hồi lò]}" />
+                <DataGridTextColumn Header="Chiều dài" Binding="{Binding [Chiều dài]}" />
             </DataGrid.Columns>
         </DataGrid>
 

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
@@ -15,7 +16,6 @@ namespace PhoiLo.Models
         public string ChucVu { get; set; } = "Vận hành"; 
     }
 
-    // [Suy luận] Cầu nối dữ liệu để DataGrid Column có thể hiểu được Binding
     public class BindingProxy : Freezable
     {
         protected override Freezable CreateInstanceCore() => new BindingProxy();
@@ -25,43 +25,12 @@ namespace PhoiLo.Models
 
     public class AppConfig : INotifyPropertyChanged
     {
-        // Độ rộng cột Pulpit 1
-        private double _col1Width = 50; private double _col2Width = 120; private double _col3Width = 90;
-        private double _col4Width = 80; private double _col5Width = 110; private double _col6Width = 110;
-        private double _col7Width = 110; private double _col8Width = 80; private double _col9Width = 180;
-        private double _col10Width = 100;
-
-        // Độ rộng cột KCS
-        private double _kcsCol1Width = 40;  
-        private double _kcsCol2Width = 150; 
-        private double _kcsCol3Width = 120; 
-        private double _kcsCol4Width = 100; 
-        private double _kcsCol5Width = 100; 
-        private double _kcsCol6Width = 100; 
-
-        private string _clientId = ""; private string _clientSecret = "";
-        private string _sheetId = ""; private string _range = "Phoi!A11:J410";
-        private double _tableFontSize = 14; private double _menuFontSize = 16;
-        private string _tableFontFamily = "Segoe UI"; private string _menuFontFamily = "Segoe UI";
-
-        // Properties (KcsCol2Width và KcsCol4Width đã được Tèo kiểm tra kỹ)
-        public double Col1Width { get => _col1Width; set { _col1Width = value; OnPropertyChanged(); } }
-        public double Col2Width { get => _col2Width; set { _col2Width = value; OnPropertyChanged(); } }
-        public double Col3Width { get => _col3Width; set { _col3Width = value; OnPropertyChanged(); } }
-        public double Col4Width { get => _col4Width; set { _col4Width = value; OnPropertyChanged(); } }
-        public double Col5Width { get => _col5Width; set { _col5Width = value; OnPropertyChanged(); } }
-        public double Col6Width { get => _col6Width; set { _col6Width = value; OnPropertyChanged(); } }
-        public double Col7Width { get => _col7Width; set { _col7Width = value; OnPropertyChanged(); } }
-        public double Col8Width { get => _col8Width; set { _col8Width = value; OnPropertyChanged(); } }
-        public double Col9Width { get => _col9Width; set { _col9Width = value; OnPropertyChanged(); } }
-        public double Col10Width { get => _col10Width; set { _col10Width = value; OnPropertyChanged(); } }
-
-        public double KcsCol1Width { get => _kcsCol1Width; set { _kcsCol1Width = value; OnPropertyChanged(); } }
-        public double KcsCol2Width { get => _kcsCol2Width; set { _kcsCol2Width = value; OnPropertyChanged(); } }
-        public double KcsCol3Width { get => _kcsCol3Width; set { _kcsCol3Width = value; OnPropertyChanged(); } }
-        public double KcsCol4Width { get => _kcsCol4Width; set { _kcsCol4Width = value; OnPropertyChanged(); } }
-        public double KcsCol5Width { get => _kcsCol5Width; set { _kcsCol5Width = value; OnPropertyChanged(); } }
-        public double KcsCol6Width { get => _kcsCol6Width; set { _kcsCol6Width = value; OnPropertyChanged(); } }
+        private string _clientId = "", _clientSecret = "", _sheetId = "", _range = "Phoi!A11:J410", _tableFontFamily = "Segoe UI", _menuFontFamily = "Segoe UI";
+        private double _tableFontSize = 14, _menuFontSize = 16;
+        
+        // [Suy luận] Đây là túi thần kỳ lưu độ rộng của hàng tỷ cột mà không cần khai báo trước
+        private Dictionary<string, double> _columnWidths = new Dictionary<string, double>();
+        public Dictionary<string, double> ColumnWidths { get => _columnWidths; set { _columnWidths = value; OnPropertyChanged(); } }
 
         public string ClientId { get => _clientId; set { _clientId = value; OnPropertyChanged(); } }
         public string ClientSecret { get => _clientSecret; set { _clientSecret = value; OnPropertyChanged(); } }
@@ -98,6 +67,7 @@ namespace PhoiLo.Models
                     var cfg = JsonSerializer.Deserialize<AppConfig>(File.ReadAllText("config.json"));
                     if (cfg != null) {
                         if (cfg.StaffList == null) cfg.StaffList = new ObservableCollection<StaffMember>();
+                        if (cfg.ColumnWidths == null) cfg.ColumnWidths = new Dictionary<string, double>();
                         if (cfg.CurrentDate.Year < 2000) cfg.CurrentDate = DateTime.Now; 
                         return cfg;
                     }

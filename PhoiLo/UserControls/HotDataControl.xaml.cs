@@ -2,16 +2,22 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Windows.Controls;
+using PhoiLo.Helpers;
 
 namespace PhoiLo.UserControls
 {
     public partial class HotDataControl : UserControl
     {
-        public HotDataControl() => InitializeComponent();
+        public HotDataControl()
+        {
+            InitializeComponent();
+            
+            // [Suy luận] Kích hoạt auto-save cho bảng Phôi Nóng
+            DataGridHelper.EnableWidthAutoSave(HotDataGrid, "PhoiNong");
+        }
 
         public void SetData(DataTable sourceTable)
         {
-            // [Suy luận] Lọc những dòng có phương thức nạp chứa chữ "nóng"
             var filteredRows = sourceTable.AsEnumerable()
                 .Where(r => (r["Phương thức nạp"]?.ToString() ?? "").ToLower().Contains("nóng"))
                 .ToList();

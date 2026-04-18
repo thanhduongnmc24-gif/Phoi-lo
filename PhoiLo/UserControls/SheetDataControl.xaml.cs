@@ -23,6 +23,9 @@ namespace PhoiLo.UserControls
         {
             InitializeComponent();
             LoadDataFromGoogle();
+            
+            // [Suy luận] Chỉ với 1 dòng này, bảng sẽ tự nhớ mọi tương tác kéo thả độ rộng
+            DataGridHelper.EnableWidthAutoSave(MainDataGrid, "Pulpit1");
         }
 
         private void BtnReload_Click(object sender, RoutedEventArgs e) => LoadDataFromGoogle();
@@ -55,6 +58,7 @@ namespace PhoiLo.UserControls
                     }
 
                     RecalculatePulpitData(dt);
+
                     dt.ColumnChanged += (s, e) => {
                         if (!_isRecalculating && e.Column != null && (e.Column.ColumnName == "Số cây nạp lò" || e.Column.ColumnName == "Hồi lò" || e.Column.ColumnName == "Hư công nghệ"))
                         {
@@ -64,6 +68,7 @@ namespace PhoiLo.UserControls
                             _isRecalculating = false;
                         }
                     };
+
                     MainDataGrid.ItemsSource = dt.DefaultView;
                     CalculateTotal(dt); 
                 }
@@ -75,7 +80,6 @@ namespace PhoiLo.UserControls
         {
             DataGridHelper.HandleExcelActions(MainDataGrid, e, () => {
                 var dv = MainDataGrid.ItemsSource as DataView;
-                // Thêm kiểm tra dv.Table != null trước khi truyền vào hàm
                 if (dv != null && dv.Table != null) {
                     _isRecalculating = true;
                     RecalculatePulpitData(dv.Table);
@@ -84,6 +88,7 @@ namespace PhoiLo.UserControls
                 }
             });
         }
+
         private void RecalculatePulpitData(DataTable dt)
         {
             double tongSoThanh = 0; 
@@ -110,11 +115,9 @@ namespace PhoiLo.UserControls
 
                     double h; if (double.TryParse(row["Hồi lò"]?.ToString(), out h)) tHoi += h;
 
-                    // Lọc phôi nóng
                     string pt = row["Phương thức nạp"]?.ToString() ?? "";
                     if (pt.ToLower().Contains("nóng")) tNong += n;
 
-                    // Thống kê chiều dài
                     string cd = row["Chiều dài"]?.ToString() ?? "";
                     if (!string.IsNullOrEmpty(cd) && n > 0) {
                         if (lengthStats.ContainsKey(cd)) lengthStats[cd] += n;
@@ -123,12 +126,13 @@ namespace PhoiLo.UserControls
                 }
             }
             Dispatcher.Invoke(() => { 
-                TxtTongPhoi.Text = tNap.ToString(); 
-                TxtTongHoiLo.Text = tHoi.ToString(); 
-                TxtTongPhoiNong.Text = tNong.ToString();
-                LengthStatsGrid.ItemsSource = lengthStats.Select(x => new { ChieuDai = x.Key, SoLuong = x.Value }).OrderBy(x => x.ChieuDai).ToList();
+                if (TxtTongPhoi != null) TxtTongPhoi.Text = tNap.ToString(); 
+                if (TxtTongHoiLo != null) TxtTongHoiLo.Text = tHoi.ToString(); 
+                if (TxtTongPhoiNong != null) TxtTongPhoiNong.Text = tNong.ToString();
+                if (LengthStatsGrid != null) LengthStatsGrid.ItemsSource = lengthStats.Select(x => new { ChieuDai = x.Key, SoLuong = x.Value }).OrderBy(x => x.ChieuDai).ToList();
             });
         }
+
         private async void BtnPush_Click(object sender, RoutedEventArgs e)
         {
             try {
@@ -139,11 +143,13 @@ namespace PhoiLo.UserControls
 
                 UserCredential credential = await GetCredential();
                 var service = new SheetsService(new BaseClientService.Initializer() { HttpClientInitializer = credential, ApplicationName = "PhoiLo" });
+                
                 var request = service.Spreadsheets.Values.Update(new ValueRange { Values = values }, App.Config.SheetId, App.Config.Range);
-request.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.USERENTERED;
-await request.ExecuteAsync();
-                MessageBox.Show("🚀 Thành công!");
-            } catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
+                request.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.USERENTERED;
+                await request.ExecuteAsync();
+
+                MessageBox.Show("🚀 Đã gởi phôi lên Google Sheets thành công!");
+            } catch (Exception ex) { MessageBox.Show("Lỗi gởi dữ liệu: " + ex.Message); }
         }
 
         private async System.Threading.Tasks.Task<UserCredential> GetCredential()
