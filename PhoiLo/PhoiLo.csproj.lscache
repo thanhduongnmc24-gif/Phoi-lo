@@ -68,10 +68,12 @@ obj/Debug/net8.0-windows/
  PhoiLo.AssemblyInfo.cs
  PhoiLo.GlobalUsings.g.cs
  UserControls/
+  HotDataControl.g.cs
   KcsDataControl.g.cs
   SheetDataControl.g.cs
  Windows/SettingWindow.g.cs
 UserControls/
+ HotDataControl.xaml.cs
  KcsDataControl.xaml.cs
  SheetDataControl.xaml.cs
 Windows/SettingWindow.xaml.cs

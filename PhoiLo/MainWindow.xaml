@@ -2,42 +2,37 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:PhoiLo" 
-        Title="Hệ Thống Quản Lý Phôi" Height="700" Width="1150" WindowStartupLocation="CenterScreen">
+        Title="Hệ Thống Quản Lý Phôi" Height="750" Width="1200" WindowStartupLocation="CenterScreen">
     <Grid DataContext="{Binding Source={x:Static local:App.Config}}">
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/> 
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="133"/> <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
         <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Background="#ecf0f1" BorderBrush="#bdc3c7" BorderThickness="0,0,0,1">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="20,0">
                 <TextBlock Text="📅 Ngày:" VerticalAlignment="Center" FontWeight="Bold" Margin="0,0,10,0"/>
                 <DatePicker SelectedDate="{Binding CurrentDate}" Width="150" Margin="0,0,20,0"/>
-
                 <TextBlock Text="🔄 Kíp:" VerticalAlignment="Center" FontWeight="Bold" Margin="0,0,10,0"/>
                 <ComboBox x:Name="CbGlobalKip" SelectedValuePath="Content" SelectedValue="{Binding CurrentKip}" Width="80" Margin="0,0,20,0" SelectionChanged="CbGlobalKip_SelectionChanged">
                     <ComboBoxItem Content="1A"/><ComboBoxItem Content="2A"/><ComboBoxItem Content="1B"/><ComboBoxItem Content="2B"/><ComboBoxItem Content="1C"/><ComboBoxItem Content="2C"/>
                 </ComboBox>
-
                 <TextBlock Text="👷 Tổ trưởng:" VerticalAlignment="Center" FontWeight="Bold" Margin="0,0,10,0"/>
                 <ComboBox x:Name="CbGlobalToTruong" Text="{Binding CurrentToTruong}" DisplayMemberPath="HoTen" SelectedValuePath="HoTen" Width="180" Margin="0,0,20,0"/>
-
                 <TextBlock Text="⚙️ Vận hành:" VerticalAlignment="Center" FontWeight="Bold" Margin="0,0,10,0"/>
                 <ComboBox x:Name="CbGlobalVanHanh" Text="{Binding CurrentVanHanh}" DisplayMemberPath="HoTen" SelectedValuePath="HoTen" Width="180"/>
             </StackPanel>
         </Border>
 
         <StackPanel Grid.Row="1" Grid.Column="0" Background="#2c3e50">
-            <TextBlock Text="DANH MỤC" Foreground="White" FontWeight="Bold" Margin="20,30,20,20" HorizontalAlignment="Center" FontSize="{Binding MenuFontSize}" FontFamily="{Binding MenuFontFamily}"/>
-            
-            <Button Content="📊 Phôi gởi Pulpit 1" Click="BtnLoadSheet_Click" Height="45" Margin="10,5" Background="Transparent" Foreground="White" BorderThickness="0" Cursor="Hand" FontSize="{Binding MenuFontSize}"/>
-            
-            <Button Content="📦 Phôi gởi KCS" Click="BtnLoadKcs_Click" Height="45" Margin="10,5" Background="Transparent" Foreground="White" BorderThickness="0" Cursor="Hand" FontSize="{Binding MenuFontSize}"/>
-            <Button Content="⚙ Cài đặt" Click="BtnOpenSetting_Click" Height="45" Margin="10,5" Background="Transparent" Foreground="White" BorderThickness="0" Cursor="Hand" FontSize="{Binding MenuFontSize}"/>
+            <TextBlock Text="DANH MỤC" Foreground="White" FontWeight="Bold" Margin="0,30,0,20" HorizontalAlignment="Center" FontSize="14"/>
+            <Button Content="📊 Pulpit 1" Click="BtnLoadSheet_Click" Height="45" Margin="5" Background="Transparent" Foreground="White" BorderThickness="0" Cursor="Hand"/>
+            <Button Content="🔥 Phôi nóng" Click="BtnHotBillet_Click" Height="45" Margin="5" Background="Transparent" Foreground="#e67e22" BorderThickness="0" Cursor="Hand" FontWeight="Bold"/>
+            <Button Content="📦 Phôi KCS" Click="BtnLoadKcs_Click" Height="45" Margin="5" Background="Transparent" Foreground="White" BorderThickness="0" Cursor="Hand"/>
+            <Button Content="⚙ Cài đặt" Click="BtnOpenSetting_Click" Height="45" Margin="5" Background="Transparent" Foreground="White" BorderThickness="0" Cursor="Hand"/>
         </StackPanel>
 
         <Grid Grid.Row="1" Grid.Column="1" Margin="10">

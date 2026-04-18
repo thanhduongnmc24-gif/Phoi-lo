@@ -1,0 +1,47 @@
+<UserControl x:Class="PhoiLo.UserControls.HotDataControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:PhoiLo"
+             xmlns:models="clr-namespace:PhoiLo.Models">
+    <UserControl.Resources>
+        <models:BindingProxy x:Key="Proxy" Data="{Binding Source={x:Static local:App.Config}}"/>
+    </UserControl.Resources>
+    <Grid DataContext="{Binding Source={x:Static local:App.Config}}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="200"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Text="DANH SÁCH PHÔI NÓNG" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+        
+        <DataGrid x:Name="HotDataGrid" Grid.Row="1" Grid.Column="0" AutoGenerateColumns="False" IsReadOnly="True" AlternatingRowBackground="#fff4e6">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="STT" Binding="{Binding [STT]}" Width="40"/>
+                <DataGridTextColumn Header="Phương thức" Binding="{Binding [Phương thức nạp]}" Width="120"/>
+                <DataGridTextColumn Header="Mác phôi" Binding="{Binding [Mác phôi]}" Width="100"/>
+                <DataGridTextColumn Header="Mẻ số" Binding="{Binding [Mẻ số]}" Width="80"/>
+                <DataGridTextColumn Header="Số cây" Binding="{Binding [Số cây nạp lò]}" Width="80"/>
+                <DataGridTextColumn Header="Ra sàn" Binding="{Binding [Ra sàn nguội]}" Width="80"/>
+                <DataGridTextColumn Header="Hư CN" Binding="{Binding [Hư công nghệ]}" Width="80"/>
+                <DataGridTextColumn Header="Hồi lò" Binding="{Binding [Hồi lò]}" Width="80"/>
+                <DataGridTextColumn Header="Chiều dài" Binding="{Binding [Chiều dài]}" Width="80"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <StackPanel Grid.Row="1" Grid.Column="1" Margin="10,0,0,0">
+            <TextBlock Text="TỔNG PHÔI NÓNG" FontWeight="Bold" HorizontalAlignment="Center"/>
+            <TextBox x:Name="TxtSumHot" IsReadOnly="True" FontSize="20" FontWeight="Bold" TextAlignment="Center" Background="#e67e22" Foreground="White" Margin="0,5,0,20"/>
+            
+            <TextBlock Text="THỐNG KÊ CHIỀU DÀI" FontWeight="Bold" Margin="0,0,0,5"/>
+            <DataGrid x:Name="HotLengthGrid" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Dài (m)" Binding="{Binding ChieuDai}" Width="*"/>
+                    <DataGridTextColumn Header="Tổng cây" Binding="{Binding SoLuong}" Width="*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+    </Grid>
+</UserControl>

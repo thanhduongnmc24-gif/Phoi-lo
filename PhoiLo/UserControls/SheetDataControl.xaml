@@ -68,8 +68,21 @@
                     <TextBlock Text="TỔNG HỢP" FontWeight="Bold" FontSize="14" Margin="0,0,0,10" Foreground="#2c3e50" HorizontalAlignment="Center"/>
                     <TextBlock Text="Tổng gởi:" FontWeight="Bold" Margin="0,5,0,2"/>
                     <TextBox x:Name="TxtTongPhoi" IsReadOnly="True" Background="#dcdde1" Foreground="#c0392b" FontWeight="Bold" FontSize="18" Padding="5" TextAlignment="Center" Text="0"/>
+                    
+                    <TextBlock Text="Phôi nóng:" FontWeight="Bold" Margin="0,10,0,2" Foreground="#e67e22"/>
+                    <TextBox x:Name="TxtTongPhoiNong" IsReadOnly="True" Background="#fdf2e9" Foreground="#e67e22" FontWeight="Bold" FontSize="18" Padding="5" TextAlignment="Center" Text="0"/>
+
                     <TextBlock Text="Tổng hồi lò:" FontWeight="Bold" Margin="0,10,0,2"/>
                     <TextBox x:Name="TxtTongHoiLo" IsReadOnly="True" Background="#dcdde1" Foreground="#2980b9" FontWeight="Bold" FontSize="18" Padding="5" TextAlignment="Center" Text="0"/>
+
+                    <TextBlock Text="📊 Thống kê chiều dài:" FontWeight="Bold" Margin="0,15,0,5"/>
+                    <DataGrid x:Name="LengthStatsGrid" AutoGenerateColumns="False" IsReadOnly="True" Height="150" Background="White" HeadersVisibility="Column">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Dài (m)" Binding="{Binding ChieuDai}" Width="*"/>
+                            <DataGridTextColumn Header="Số cây" Binding="{Binding SoLuong}" Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
                     <TextBlock Text="Ca trước giao:" FontWeight="Bold" Margin="0,10,0,2"/>
                     <TextBox x:Name="TxtPhoiCaTruoc" FontSize="14" Padding="3"/>
                     <TextBlock Text="Ngoài sàn nạp:" FontWeight="Bold" Margin="0,10,0,2"/>

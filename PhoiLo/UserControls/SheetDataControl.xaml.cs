@@ -100,16 +100,35 @@ namespace PhoiLo.UserControls
 
         private void CalculateTotal(DataTable dt)
         {
-            double tNap = 0; double tHoi = 0;
+            double tNap = 0; double tHoi = 0; double tNong = 0;
+            var lengthStats = new Dictionary<string, double>();
+
             foreach (DataRow row in dt.Rows) {
                 if (row.RowState != DataRowState.Deleted) {
-                    double n; if (double.TryParse(row["Số cây nạp lò"]?.ToString(), out n)) tNap += n;
+                    double n; double.TryParse(row["Số cây nạp lò"]?.ToString(), out n);
+                    tNap += n;
+
                     double h; if (double.TryParse(row["Hồi lò"]?.ToString(), out h)) tHoi += h;
+
+                    // Lọc phôi nóng
+                    string pt = row["Phương thức nạp"]?.ToString() ?? "";
+                    if (pt.ToLower().Contains("nóng")) tNong += n;
+
+                    // Thống kê chiều dài
+                    string cd = row["Chiều dài"]?.ToString() ?? "";
+                    if (!string.IsNullOrEmpty(cd) && n > 0) {
+                        if (lengthStats.ContainsKey(cd)) lengthStats[cd] += n;
+                        else lengthStats.Add(cd, n);
+                    }
                 }
             }
-            Dispatcher.Invoke(() => { TxtTongPhoi.Text = tNap.ToString(); TxtTongHoiLo.Text = tHoi.ToString(); });
+            Dispatcher.Invoke(() => { 
+                TxtTongPhoi.Text = tNap.ToString(); 
+                TxtTongHoiLo.Text = tHoi.ToString(); 
+                TxtTongPhoiNong.Text = tNong.ToString();
+                LengthStatsGrid.ItemsSource = lengthStats.Select(x => new { ChieuDai = x.Key, SoLuong = x.Value }).OrderBy(x => x.ChieuDai).ToList();
+            });
         }
-
         private async void BtnPush_Click(object sender, RoutedEventArgs e)
         {
             try {
